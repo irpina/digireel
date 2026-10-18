@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
-/* DigiTensor's UI, on the pedal shell (pedal_ui.inc: the pages, SETUP, presets, TAP, BYPASS, the owner):
+/* DigiReel's UI, on the pedal shell (pedal_ui.inc: the pages, SETUP, presets, TAP, BYPASS, the owner):
  *
- *   1 TENSOR    SPEED PITCH TIME BLEND / RANDOM GLIDE TONE SLICE
+ *   1 REEL      SPEED PITCH TIME BLEND / RANDOM GLIDE TONE SLICE
  *   2 SECONDARY GRAIN XFADE R-SPD R-PCH / R-REV R-STU WIDTH OUT  (the random events' weights)
  *   3 MODES     MODE (TAPE, STRETCH) DIR (FWD, REV, ALT) HOLD (MOMENTARY, LATCH) CAPTURE (LAST, NEXT) /
  *               QUANT (HOLD on the beat) PATTERN (SLICE's) RANDOM (each WINDOW or each BEAT)
@@ -10,26 +10,26 @@
  *   T3 TAPE STOP: slows the tape to a stop while held (in STRETCH, a freeze)
  *   T4 RANDOM: tap to turn the random events on or off; hold for all of them, every point
  *   trig 1-10  TIME's divisions, 1/32 .. 2 bars;  trig 11-14  SPEED -1x, 0.5x, 1x, 2x
- *   MIDI: SPEED 20, TIME 21, PITCH 22, BLEND 23, RANDOM 24 (as the Tensor's), TONE 25, SLICE 26, MODE 27, CAPTURE
- *   28 (0-42 NEXT, as the Tensor's hold mode), DIR 29, PATTERN 30, GLIDE 31, HOLD 85, REVERSE 86, TAPE STOP 87,
+ *   MIDI: SPEED 20, TIME 21, PITCH 22, BLEND 23, RANDOM 24, TONE 25, SLICE 26, MODE 27, CAPTURE
+ *   28 (0-42 NEXT), DIR 29, PATTERN 30, GLIDE 31, HOLD 85, REVERSE 86, TAPE STOP 87,
  *   RANDOM on 88, TAP 93, the pedal on 102 (below 64 bypassed) */
 #pragma GCC optimize ("no-tree-loop-distribute-patterns")
-#include "dtensor.h"
+#include "dreel.h"
 #include "tables.h"
 
 #define PD_TAG      0x4454454Eu             /* "DTEN" */
-#define PD_NAME     "DIGITENSOR"
+#define PD_NAME     "DIGIREEL"
 #define PD_SAVE_VER 1
 #define PD_KBIP     ((1 << K_SPEED) | (1 << K_PITCH) | (1 << K_TONE))
 #define PD_SBIP     0
 #define PD_NCFG     0
 
-/* The Mod Menu's DIGITENSOR: a tape reel and its arrow back */
+/* The Mod Menu's DIGIREEL: a tape reel and its arrow back */
 static const u16 pd_icon[16] = {
     0x0000, 0x0ff0, 0x1818, 0x33cc, 0x6666, 0x6db6, 0x6db6, 0x6666,
     0x33cc, 0x1818, 0x0ff0, 0x0000, 0x2000, 0x7ffe, 0x2000, 0x0000
 };
-static const char *const pd_title[3] = { "Tensor", "Secondary", "Modes" };
+static const char *const pd_title[3] = { "Reel", "Secondary", "Modes" };
 static const char *const pd_klbl[8] = { "SPED", "PTCH", "TIME", "BLND", "RAND", "GLID", "TONE", "SLIC" };
 static const u8 pd_kdef[8] = PD_KDEF;
 static const char *const pd_slbl[8] = { "GRAN", "XFAD", "RSPD", "RPCH", "RREV", "RSTU", "WIDE", "OUT" };
@@ -156,7 +156,7 @@ static int fx_value(void *bmp, const void *font, int x, int y, int pg, int i)
         int st = ((v - 64) * 24 + (v >= 64 ? 32 : -32)) / 64;
         TEXTF(bmp, font, x, y, -1, "%c%dST", st >= 0 ? '+' : '-', st >= 0 ? st : -st);
     } else if (i == K_TIME) {
-        if (dtensor_tempo()) {
+        if (dreel_tempo()) {
             int d = v * 10 / 128;
             TEXTF(bmp, font, x, y, -1, "%s", divs[d > 9 ? 9 : d]);
         } else {

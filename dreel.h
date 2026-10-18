@@ -1,10 +1,10 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
-/* DigiTensor: a Tensor-style time-warp pedal for the Digitone mk1's inputs, on the pedal shell (pedal.h). Shared
+/* DigiReel: a time-warp pedal for the Digitone mk1's inputs, on the pedal shell (pedal.h). Shared
  * by dsp.c (the render, interrupt level) and ui.c (the UI task). */
-#ifndef DTENSOR_H
-#define DTENSOR_H
+#ifndef DREEL_H
+#define DREEL_H
 
-#define PD(x) dtensor_##x
+#define PD(x) dreel_##x
 #include "pedal.h"
 
 /* The buffer: the region mod.json claims in the profile's bulk area. The OS never clears it, so the UI clears

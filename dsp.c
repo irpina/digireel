@@ -1,5 +1,5 @@
 /* SPDX-License-Identifier: GPL-2.0-or-later */
-/* DigiTensor's render: a Tensor-style time-warp pedal. core-dn1 calls it at interrupt level for every block while
+/* DigiReel's render: a time-warp pedal. core-dn1 calls it at interrupt level for every block while
  * the page is open (the pedal shell, pedal_dsp.inc, around fx_block). The inputs go onto a tape, 10.9 s around,
  * always (even bypassed, so a HOLD can take what was just played), and a head plays the tape back:
  *   SPEED  -2x .. +2x (64 stops it; 96 is 1x): faster runs into the present and jumps back a window, slower
@@ -10,10 +10,10 @@
  *          direction (ALT: back and forth); the tape stops while it loops
  *   TAPE STOP (T3) slows the tape to a stop over GLIDE, and starts it again
  *   RANDOM at each beat (or window) maybe a random speed, pitch, reverse or stutter for one beat
- *   SLICE  an SL-2-style gate on the wet, one of eight 16-step patterns; TONE a tilt to dark or thin; WIDTH
+ *   SLICE  a step gate on the wet, one of eight 16-step patterns; TONE a tilt to dark or thin; WIDTH
  * Fixed point as the shell's; positions on the tape in frames Q8 (the tape is 2^19 frames: 2^27 in Q8). */
 #pragma GCC optimize ("no-tree-loop-distribute-patterns")
-#include "dtensor.h"
+#include "dreel.h"
 #include "tables.h"
 
 #define PD_MIX  K_BLEND
